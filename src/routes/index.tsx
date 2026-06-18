@@ -86,7 +86,7 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Top utility bar */}
       <div className="hidden md:block bg-navy-deep/90 border-b border-border text-sm">
-        <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between text-muted-foreground">
+        <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between text-white">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-primary" /> +91 98745 67890</span>
             <span className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-primary" /> info@mallicktravels.com</span>
