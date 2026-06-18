@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import React from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   Phone, Mail, Headphones, Facebook, Instagram, Twitter, Youtube,
@@ -18,6 +19,7 @@ import andaman from "@/assets/andaman.jpg";
 import t1 from "@/assets/t1.jpg";
 import t2 from "@/assets/t2.jpg";
 import t3 from "@/assets/t3.jpg";
+import { FaWhatsapp } from "react-icons/fa";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -83,7 +85,7 @@ function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Top utility bar */}
-      <div className="hidden md:block bg-white border-b border-border text-sm">
+      <div className="hidden md:block bg-navy-deep/90 border-b border-border text-sm">
         <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between text-muted-foreground">
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-primary" /> +91 98745 67890</span>
@@ -100,47 +102,55 @@ function Index() {
         </div>
       </div>
 
-      {/* Nav */}
-      <header className="bg-white sticky top-0 z-40 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
-          <a href="#" className="flex min-w-0 items-center gap-2">
-            <div className="h-10 w-10 sm:h-12 sm:w-12 shrink-0 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 grid place-items-center text-white">
-              <Plane className="h-5 w-5 sm:h-6 sm:w-6 -rotate-45" />
-            </div>
-            <div className="leading-tight min-w-0">
-              <div className="font-extrabold text-base sm:text-lg tracking-tight truncate"><span className="text-sky-500">MALLICK</span> <span className="text-primary">TRAVELS</span></div>
-              <div className="text-[10px] italic text-muted-foreground truncate">Your Journey, Our Passion</div>
-            </div>
-          </a>
-          <nav className="hidden lg:flex items-center gap-5 text-[12px] font-semibold text-foreground/80">
-            {navLinks.map((n, i) => (
-              <a key={n} href="#" className={`hover:text-primary transition ${i === 0 ? "text-primary border-b-2 border-primary pb-1" : ""}`}>{n}</a>
-            ))}
-            <button className="flex items-center gap-1 hover:text-primary">MORE <ChevronDown className="h-3 w-3" /></button>
-          </nav>
-          <div className="flex items-center gap-2 shrink-0">
-            <a href="tel:+919874567890" className="hidden sm:flex items-center gap-2 bg-primary text-primary-foreground px-3 sm:px-4 py-2 rounded-lg font-semibold">
-              <Phone className="h-4 w-4" />
-              <div className="text-left leading-tight">
-                <div className="text-[10px] font-medium">Call Us Now</div>
-                <div className="text-sm">+91 98745 67890</div>
+      <header className="w-full font-sans sticky top-0 z-50">
+
+        {/* 2. Main Navbar */}
+        <div className="bg-white shadow-sm px-4 sm:px-6 py-2.5">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+
+            {/* Logo & Company Name */}
+            <div className="flex items-center gap-3 cursor-pointer">
+              <div className="h-11 w-11 rounded-full bg-gradient-to-br from-[#00A8FF] to-[#1a103c] flex items-center justify-center text-white shadow-sm">
+                <Plane className="h-6 w-6 -rotate-45" fill="currentColor" />
               </div>
-            </a>
-            <a href="tel:+919874567890" className="sm:hidden h-10 w-10 grid place-items-center rounded-lg bg-primary text-primary-foreground"><Phone className="h-4 w-4" /></a>
-            <button onClick={() => setMobileOpen(v => !v)} className="lg:hidden h-10 w-10 grid place-items-center rounded-lg border border-border" aria-label="Menu">
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
+              <div className="flex flex-col justify-center">
+                <div className="font-extrabold text-[20px] sm:text-[22px] leading-[1.1] tracking-tight">
+                  <div className="text-[#1a103c]">MALLICK</div>
+                  <div className="text-[#FFB700]">TRAVELS</div>
+                </div>
+                <div className="text-[9px] sm:text-[10px] italic text-gray-500 font-medium tracking-tight mt-[1px]">
+                  Your Journey, Our Passion
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 text-[12px] font-bold text-[#1a103c]">
+              <Link to="/" className="text-[#FFB700] border-b-2 border-[#FFB700] pb-1 uppercase tracking-wide [&.active]:text-[#FFB700]">HOME</Link>
+              <Link to="/flights" className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1">FLIGHTS</Link>
+
+              <Link to="/hotels" className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1">HOTELS</Link>
+
+              <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">HOLIDAY PACKAGES</a>
+              <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">DOMESTIC TOURS</a>
+              <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">INTERNATIONAL TOURS</a>
+              <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">VISA SERVICES</a>
+              <a href="#" className="hover:text-[#FFB700] transition uppercase flex items-center gap-1 tracking-wide">
+                MORE <ChevronDown className="w-3 h-3 stroke-[3]" />
+              </a>
+            </nav>
+
+            {/* Right Side Call Us Button */}
+            <div className="hidden lg:flex items-center bg-[#FFB700] rounded-md px-4 py-2 gap-3 cursor-pointer hover:bg-yellow-500 transition shadow-sm">
+              <Phone className="w-4 h-4 text-[#1a103c] fill-[#1a103c]" />
+              <div className="flex flex-col text-[#1a103c] leading-none">
+                <span className="text-[10px] font-bold">Call Us Now</span>
+                <span className="text-[13px] font-extrabold tracking-wide mt-[2px]">+91 98745 67890</span>
+              </div>
+            </div>
+
           </div>
         </div>
-        {mobileOpen && (
-          <nav className="lg:hidden border-t border-border bg-white">
-            <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col text-sm font-semibold">
-              {navLinks.map((n, i) => (
-                <a key={n} href="#" onClick={() => setMobileOpen(false)} className={`py-2.5 border-b border-border/60 ${i === 0 ? "text-primary" : "text-foreground/80"}`}>{n}</a>
-              ))}
-            </div>
-          </nav>
-        )}
       </header>
 
       {/* Hero */}
@@ -187,22 +197,32 @@ function Index() {
         </div>
 
         {/* Booking widget */}
-        <div className="relative -mt-12 sm:-mt-16 max-w-6xl mx-auto px-4 sm:px-6 pb-12">
-          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-            <div className="flex overflow-x-auto no-scrollbar">
-              {bookingTabs.map(({ icon: Ic, label }) => (
-                <button
-                  key={label}
-                  onClick={() => setActiveTab(label)}
-                  className={`flex items-center gap-2 px-4 sm:px-6 py-3 sm:py-4 font-semibold text-xs sm:text-sm whitespace-nowrap flex-1 min-w-max justify-center ${
-                    activeTab === label ? "bg-primary text-primary-foreground" : "text-foreground/70 hover:bg-muted"
-                  }`}
-                >
-                  <Ic className="h-4 w-4" /> {label}
-                </button>
+        <div className="relative -mt-16 sm:-mt-24 max-w-7xl mx-auto px-4 sm:px-6 pb-12 z-20">
+          <div className="bg-white rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] p-5 sm:p-8">
+
+            {/* Tabs */}
+            <div className="flex items-center gap-2 sm:gap-4 border-b border-gray-200 pb-5 mb-6 overflow-x-auto no-scrollbar">
+              {bookingTabs.map(({ icon: Ic, label }, idx) => (
+                <React.Fragment key={label}>
+                  <button
+                    onClick={() => setActiveTab(label)}
+                    className={`flex items-center gap-2 font-extrabold text-[13px] sm:text-sm whitespace-nowrap transition-all shrink-0 ${activeTab === label
+                        ? "bg-[#FFB700] text-[#1a103c] px-6 py-3 rounded-lg shadow-sm"
+                        : "text-gray-600 px-3 py-3 hover:text-[#1a103c]"
+                      }`}
+                  >
+                    <Ic className="h-5 w-5" /> {label}
+                  </button>
+                  {/* Vertical Separator between inactive tabs */}
+                  {idx < bookingTabs.length - 1 && activeTab !== label && activeTab !== bookingTabs[idx + 1].label && (
+                    <div className="hidden sm:block w-px h-6 bg-gray-200 shrink-0"></div>
+                  )}
+                </React.Fragment>
               ))}
             </div>
-            <div className="p-4 sm:p-6">
+
+            {/* Form Container */}
+            <div className="w-full">
               {activeTab === "FLIGHTS" && <FlightForm tripType={tripType} setTripType={setTripType} />}
               {activeTab === "HOTELS" && <HotelForm />}
               {activeTab === "HOLIDAYS" && <HolidayForm />}
@@ -392,14 +412,56 @@ function Index() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-white/10 py-4 text-center text-xs text-white/60 px-4">
-          © 2025 Mallick Travels. All Rights Reserved.
+
+        {/* Updated Bottom Footer with Online Original Logos */}
+        <div className="border-t border-white/10 py-4 px-4">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-xs text-white/60 text-center md:text-left">
+              © 2025 Mallick Travels. All Rights Reserved.
+            </div>
+
+            {/* Payment Methods Logos using Public CDN links */}
+            <div className="flex items-center justify-center gap-2 sm:gap-3">
+              {/* Visa */}
+              <div className="bg-white h-7 w-12 rounded flex items-center justify-center shadow-sm p-1">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Visa_Inc._logo_%282005%E2%80%932014%29.png"
+                  alt="Visa"
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              {/* MasterCard */}
+              <div className="bg-white h-7 w-12 rounded flex items-center justify-center shadow-sm p-1">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
+                  alt="MasterCard"
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              {/* RuPay */}
+              <div className="bg-white h-7 w-12 rounded flex items-center justify-center shadow-sm p-1">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Rupay-Logo.png"
+                  alt="RuPay"
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              {/* UPI */}
+              <div className="bg-white h-7 w-12 rounded flex items-center justify-center shadow-sm p-1">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/f/fa/UPI-Logo.png"
+                  alt="UPI"
+                  className="h-full w-full object-contain"
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </footer>
 
       {/* WhatsApp floating */}
       <a href="#" className="fixed bottom-5 right-5 h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-[#25D366] text-white grid place-items-center shadow-xl hover:scale-110 transition z-50" aria-label="WhatsApp">
-        <MessageCircle className="h-6 w-6 sm:h-7 sm:w-7" />
+        <FaWhatsapp className="h-6 w-6 sm:h-7 sm:w-7" />
       </a>
     </div>
   );
@@ -409,91 +471,120 @@ function Index() {
 
 function FlightForm({ tripType, setTripType }: { tripType: string; setTripType: (v: string) => void }) {
   return (
-    <div>
-      <div className="flex items-center gap-6 mb-5 text-sm">
-        {[["one", "One Way"], ["round", "Round Trip"]].map(([v, l]) => (
-          <label key={v} className="flex items-center gap-2 cursor-pointer">
-            <input type="radio" checked={tripType === v} onChange={() => setTripType(v)} className="accent-primary h-4 w-4" />
-            <span className={tripType === v ? "text-foreground font-medium" : "text-muted-foreground"}>{l}</span>
-          </label>
-        ))}
+    <div className="flex flex-col lg:flex-row items-center gap-6 w-full">
+      {/* Radios */}
+      <div className="flex flex-row lg:flex-col gap-4 lg:pr-6 lg:border-r border-gray-200 shrink-0 w-full lg:w-auto">
+        <label className="flex items-center gap-3 cursor-pointer text-[14px] font-extrabold text-[#1a103c]">
+          <input type="radio" checked={tripType === "one"} onChange={() => setTripType("one")} className="w-4 h-4 accent-[#1a103c]" />
+          One Way
+        </label>
+        <label className="flex items-center gap-3 cursor-pointer text-[14px] font-bold text-gray-500 hover:text-[#1a103c] transition">
+          <input type="radio" checked={tripType === "round"} onChange={() => setTripType("round")} className="w-4 h-4 accent-[#1a103c]" />
+          Round Trip
+        </label>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-        <FieldBox className="md:col-span-3" label="From" icon={MapPin} placeholder="Select City" />
-        <div className="hidden md:flex justify-center pb-3"><div className="h-10 w-10 rounded-full border border-border grid place-items-center"><ArrowRightLeft className="h-4 w-4 text-muted-foreground" /></div></div>
-        <FieldBox className="md:col-span-3" label="To" icon={MapPin} placeholder="Select City" />
-        <FieldBox className="md:col-span-2" label="Depart" icon={Calendar} placeholder="Select Date" />
-        <FieldBox className="md:col-span-2" label="Travellers & Class" icon={Users} placeholder="1 Traveller, Economy" trailing={<ChevronDown className="h-4 w-4" />} />
-        <SearchButton />
+
+      {/* Inputs */}
+      <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
+        <FieldBox label="From" icon={MapPin} placeholder="Select City" />
+
+        {/* Exchange Icon */}
+        <div className="hidden lg:flex w-9 h-9 rounded-full bg-white border border-gray-200 items-center justify-center shrink-0 -mx-4 z-10 shadow-sm cursor-pointer hover:bg-gray-50 transition">
+          <ArrowRightLeft className="w-4 h-4 text-[#1a103c]" />
+        </div>
+
+        <FieldBox className="lg:pl-8" label="To" icon={MapPin} placeholder="Select City" />
+        <FieldBox label="Depart" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} />
+        <FieldBox label="Travellers & Class" icon={null} placeholder="1 Traveller, Economy" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} noBorder />
       </div>
+
+      <SearchButton label="SEARCH FLIGHTS" />
     </div>
   );
 }
 
 function HotelForm() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-      <FieldBox className="md:col-span-4" label="City / Hotel / Area" icon={MapPin} placeholder="Enter destination" />
-      <FieldBox className="md:col-span-2" label="Check-In" icon={Calendar} placeholder="Select Date" />
-      <FieldBox className="md:col-span-2" label="Check-Out" icon={Calendar} placeholder="Select Date" />
-      <FieldBox className="md:col-span-3" label="Rooms & Guests" icon={Users} placeholder="1 Room, 2 Adults" trailing={<ChevronDown className="h-4 w-4" />} />
-      <SearchButton />
+    <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
+      <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
+        <FieldBox label="City / Hotel / Area" icon={MapPin} placeholder="Enter destination" />
+        <FieldBox label="Check-In" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} />
+        <FieldBox label="Check-Out" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} />
+        <FieldBox label="Rooms & Guests" icon={null} placeholder="1 Room, 2 Adults" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} noBorder />
+      </div>
+      <SearchButton label="SEARCH HOTELS" />
     </div>
   );
 }
 
 function HolidayForm() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-      <FieldBox className="md:col-span-4" label="Destination" icon={MapPin} placeholder="Where do you want to go?" />
-      <FieldBox className="md:col-span-3" label="Departure Date" icon={Calendar} placeholder="Select Date" />
-      <FieldBox className="md:col-span-2" label="Duration" icon={Calendar} placeholder="Nights" trailing={<ChevronDown className="h-4 w-4" />} />
-      <FieldBox className="md:col-span-2" label="Travellers" icon={Users} placeholder="2 Adults" trailing={<ChevronDown className="h-4 w-4" />} />
-      <SearchButton />
+    <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
+      <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
+        <FieldBox label="Destination" icon={MapPin} placeholder="Where do you want to go?" />
+        <FieldBox label="Departure Date" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} />
+        <FieldBox label="Duration" icon={null} placeholder="Nights" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} />
+        <FieldBox label="Travellers" icon={null} placeholder="2 Adults" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} noBorder />
+      </div>
+      <SearchButton label="SEARCH HOLIDAYS" />
     </div>
   );
 }
 
 function TrainForm() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-      <FieldBox className="md:col-span-3" label="From Station" icon={MapPin} placeholder="Origin station" />
-      <div className="hidden md:flex justify-center pb-3"><div className="h-10 w-10 rounded-full border border-border grid place-items-center"><ArrowRightLeft className="h-4 w-4 text-muted-foreground" /></div></div>
-      <FieldBox className="md:col-span-3" label="To Station" icon={MapPin} placeholder="Destination station" />
-      <FieldBox className="md:col-span-2" label="Journey Date" icon={Calendar} placeholder="Select Date" />
-      <FieldBox className="md:col-span-2" label="Class" icon={Train} placeholder="All Classes" trailing={<ChevronDown className="h-4 w-4" />} />
-      <SearchButton />
+    <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
+      <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
+        <FieldBox label="From Station" icon={MapPin} placeholder="Origin station" />
+        <div className="hidden lg:flex w-9 h-9 rounded-full bg-white border border-gray-200 items-center justify-center shrink-0 -mx-4 z-10 shadow-sm cursor-pointer hover:bg-gray-50 transition">
+          <ArrowRightLeft className="w-4 h-4 text-[#1a103c]" />
+        </div>
+        <FieldBox className="lg:pl-8" label="To Station" icon={MapPin} placeholder="Destination station" />
+        <FieldBox label="Journey Date" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} />
+        <FieldBox label="Class" icon={Train} placeholder="All Classes" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} noBorder />
+      </div>
+      <SearchButton label="SEARCH TRAINS" />
     </div>
   );
 }
 
 function BusForm() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
-      <FieldBox className="md:col-span-4" label="From" icon={MapPin} placeholder="Leaving from" />
-      <div className="hidden md:flex justify-center pb-3"><div className="h-10 w-10 rounded-full border border-border grid place-items-center"><ArrowRightLeft className="h-4 w-4 text-muted-foreground" /></div></div>
-      <FieldBox className="md:col-span-4" label="To" icon={MapPin} placeholder="Going to" />
-      <FieldBox className="md:col-span-3" label="Travel Date" icon={Calendar} placeholder="Select Date" />
-      <SearchButton />
+    <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
+      <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
+        <FieldBox label="From" icon={MapPin} placeholder="Leaving from" />
+        <div className="hidden lg:flex w-9 h-9 rounded-full bg-white border border-gray-200 items-center justify-center shrink-0 -mx-4 z-10 shadow-sm cursor-pointer hover:bg-gray-50 transition">
+          <ArrowRightLeft className="w-4 h-4 text-[#1a103c]" />
+        </div>
+        <FieldBox className="lg:pl-8" label="To" icon={MapPin} placeholder="Going to" />
+        <FieldBox label="Travel Date" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} noBorder />
+      </div>
+      <SearchButton label="SEARCH BUSES" />
     </div>
   );
 }
 
-function SearchButton() {
+function SearchButton({ label = "SEARCH" }: { label?: string }) {
   return (
-    <button className="md:col-span-1 bg-primary text-primary-foreground font-bold py-3 px-5 rounded-lg flex items-center justify-center gap-2 h-full w-full">
-      SEARCH <Plane className="h-4 w-4 -rotate-45" />
+    <button className="bg-[#FFB700] text-[#1a103c] font-extrabold text-[15px] px-8 py-4 rounded-xl flex items-center justify-center gap-2 w-full lg:w-auto shrink-0 shadow-md hover:bg-yellow-500 transition-all">
+      {label}
     </button>
   );
 }
 
-function FieldBox({ className = "", label, icon: Icon, placeholder, trailing }: { className?: string; label: string; icon: any; placeholder: string; trailing?: React.ReactNode }) {
+function FieldBox({ className = "", label, icon: Icon, placeholder, trailing, noBorder = false }: { className?: string; label: string; icon: any; placeholder: string; trailing?: React.ReactNode; noBorder?: boolean }) {
   return (
-    <div className={`border border-border rounded-lg px-3 py-2 ${className}`}>
-      <div className="text-[11px] text-muted-foreground">{label}</div>
-      <div className="flex items-center gap-2 mt-0.5">
-        <Icon className="h-4 w-4 text-primary shrink-0" />
-        <input className="flex-1 min-w-0 outline-none text-sm bg-transparent" placeholder={placeholder} />
+    <div className={`flex-1 w-full px-4 py-3 border-b lg:border-b-0 ${!noBorder ? 'lg:border-r border-gray-200' : ''} ${className}`}>
+      <p className="text-[12px] text-gray-500 font-bold mb-1">{label}</p>
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 w-full">
+          {Icon && <Icon className="w-5 h-5 text-gray-600 shrink-0" />}
+          <input
+            className="font-extrabold text-[#1a103c] text-[15px] outline-none w-full bg-transparent placeholder:text-[#1a103c] truncate cursor-pointer"
+            placeholder={placeholder}
+            readOnly={!!trailing}
+          />
+        </div>
         {trailing}
       </div>
     </div>
