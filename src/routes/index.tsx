@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   Phone, Mail, Headphones, Facebook, Instagram, Twitter, Youtube,
   Plane, Building2, Palmtree, Train, Bus, Shield, Briefcase,
@@ -27,8 +27,6 @@ import { UserDropdown } from "@/components/UserDropdown";
 export const Route = createFileRoute("/")({
   component: Index,
 });
-
-const navLinks = ["HOME", "FLIGHTS", "HOTELS", "HOLIDAY PACKAGES", "DOMESTIC TOURS", "INTERNATIONAL TOURS", "VISA SERVICES"];
 
 const services = [
   { icon: Plane, label: "Flight Booking", desc: "Domestic & International flight tickets", color: "text-sky-500", bg: "bg-sky-100" },
@@ -85,8 +83,21 @@ function Index() {
   const [destFilter, setDestFilter] = useState<"Domestic" | "International">("Domestic");
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Bring in the Authentication state & functions
-  const { isAuthenticated, login, isLoading } = useAuth();
+  // Authentication Hook & Navigate Hook
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // SECURITY FUNCTION: Eita check korbe je user login koreche kina kono action newar age
+  const handleSecureAction = (targetPath: any, searchParams?: any) => {
+    if (isAuthenticated) {
+      // Jodi login kora thake, tahole page e jete dibe
+      navigate({ to: targetPath, search: searchParams });
+    } else {
+      // Jodi login na thake, tahole alert diye login page e pathabe
+      alert("Please Login or Register to search and book packages!");
+      navigate({ to: "/login" });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
@@ -130,18 +141,18 @@ function Index() {
               </div>
             </div>
 
-            {/* Navigation Links */}
+            {/* Navigation Links - REMOVED 'MORE' BUTTON */}
             <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 text-[12px] font-bold text-[#1a103c]">
               <Link to="/" className="text-[#FFB700] border-b-2 border-[#FFB700] pb-1 uppercase tracking-wide [&.active]:text-[#FFB700]">HOME</Link>
-              <Link to="/flight-booking" className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1">FLIGHTS</Link>
-              <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">HOTELS</a>
+              
+              {/* Conditional Navigation - If clicked without login, redirect to login */}
+              <button onClick={() => handleSecureAction('/flight-booking')} className="hover:text-[#FFB700] transition uppercase tracking-wide">FLIGHTS</button>
+              <button onClick={() => handleSecureAction('/hotels')} className="hover:text-[#FFB700] transition uppercase tracking-wide">HOTELS</button>
+              
               <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">HOLIDAY PACKAGES</a>
               <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">DOMESTIC TOURS</a>
               <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">INTERNATIONAL TOURS</a>
               <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">VISA SERVICES</a>
-              <a href="#" className="hover:text-[#FFB700] transition uppercase flex items-center gap-1 tracking-wide">
-                MORE <ChevronDown className="w-3 h-3 stroke-[3]" />
-              </a>
             </nav>
 
             {/* Right Side: Call Us & Auth */}
@@ -160,13 +171,12 @@ function Index() {
               {isAuthenticated ? (
                 <UserDropdown />
               ) : (
-                <button 
-                  onClick={() => login("user@example.com", "password123")} 
-                  disabled={isLoading}
-                  className="bg-[#1a103c] text-white px-5 py-2 rounded-md text-sm font-bold shadow-sm hover:bg-gray-800 transition disabled:opacity-50"
+                <Link 
+                  to="/login"
+                  className="bg-[#1a103c] text-white px-5 py-2 rounded-md text-sm font-bold shadow-sm hover:bg-gray-800 transition"
                 >
-                  {isLoading ? "Logging in..." : "Login / Signup"}
-                </button>
+                  Login / Signup
+                </Link>
               )}
 
             </div>
@@ -181,7 +191,7 @@ function Index() {
           {mobileOpen && (
             <div className="xl:hidden mt-3 pb-3 border-t border-gray-100 pt-3 flex flex-col gap-3 text-[13px] font-bold text-[#1a103c]">
               <Link to="/" className="uppercase">HOME</Link>
-              <Link to="/flight-booking" className="uppercase">FLIGHTS</Link>
+              <button onClick={() => handleSecureAction('/flight-booking')} className="uppercase text-left">FLIGHTS</button>
               <a href="#" className="uppercase">HOTELS</a>
               <a href="#" className="uppercase">HOLIDAY PACKAGES</a>
               <a href="#" className="uppercase">DOMESTIC TOURS</a>
@@ -196,13 +206,12 @@ function Index() {
                     <UserDropdown />
                   </div>
                 ) : (
-                  <button 
-                    onClick={() => login("user@example.com", "password123")} 
-                    disabled={isLoading}
-                    className="w-full bg-[#1a103c] text-white px-5 py-2 rounded-md text-sm font-bold shadow-sm hover:bg-gray-800 transition disabled:opacity-50"
+                  <Link 
+                    to="/login"
+                    className="w-full flex justify-center bg-[#1a103c] text-white px-5 py-2 rounded-md text-sm font-bold shadow-sm hover:bg-gray-800 transition"
                   >
-                    {isLoading ? "Logging in..." : "Login / Signup"}
-                  </button>
+                    Login / Signup
+                  </Link>
                 )}
               </div>
             </div>
@@ -248,7 +257,10 @@ function Index() {
               </div>
               <Plane className="absolute right-6 top-16 h-6 w-6 text-primary -rotate-12" />
               <p className="mt-3 text-sm text-white/80">On Domestic & International Holiday Packages</p>
-              <button className="mt-5 bg-primary text-primary-foreground font-semibold px-5 py-2.5 rounded-md text-sm">EXPLORE PACKAGES</button>
+              {/* EXPLORE PACKAGES requires LOGIN */}
+              <button onClick={() => handleSecureAction('/packages')} className="mt-5 bg-primary text-primary-foreground font-semibold px-5 py-2.5 rounded-md text-sm hover:scale-105 transition">
+                EXPLORE PACKAGES
+              </button>
             </div>
           </div>
         </div>
@@ -278,13 +290,13 @@ function Index() {
               ))}
             </div>
 
-            {/* Form Container */}
+            {/* Form Container - ALL SEARCH BUTTONS PROTECTED BY LOGIN */}
             <div className="w-full">
-              {activeTab === "FLIGHTS" && <FlightForm tripType={tripType} setTripType={setTripType} />}
-              {activeTab === "HOTELS" && <HotelForm />}
-              {activeTab === "HOLIDAYS" && <HolidayForm />}
-              {activeTab === "TRAINS" && <TrainForm />}
-              {activeTab === "BUSES" && <BusForm />}
+              {activeTab === "FLIGHTS" && <FlightForm tripType={tripType} setTripType={setTripType} onSearch={() => handleSecureAction('/flight-booking', { from: "DEL", to: "BOM", pax: 1 })} />}
+              {activeTab === "HOTELS" && <HotelForm onSearch={() => handleSecureAction('/hotels')} />}
+              {activeTab === "HOLIDAYS" && <HolidayForm onSearch={() => handleSecureAction('/packages')} />}
+              {activeTab === "TRAINS" && <TrainForm onSearch={() => handleSecureAction('/trains')} />}
+              {activeTab === "BUSES" && <BusForm onSearch={() => handleSecureAction('/buses')} />}
             </div>
           </div>
         </div>
@@ -294,7 +306,7 @@ function Index() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-14">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
           {services.map(({ icon: Ic, label, desc, color, bg }) => (
-            <div key={label} className="text-center group cursor-pointer">
+            <div key={label} onClick={() => handleSecureAction('/services')} className="text-center group cursor-pointer">
               <div className={`mx-auto h-14 w-14 sm:h-16 sm:w-16 rounded-full grid place-items-center ${bg} group-hover:scale-110 transition`}>
                 <Ic className={`h-6 w-6 sm:h-7 sm:w-7 ${color}`} />
               </div>
@@ -312,7 +324,8 @@ function Index() {
           <div className="relative z-10">
             <h3 className="text-2xl sm:text-3xl font-[Playfair_Display] italic text-primary">Exclusive Deals &amp; Offers!</h3>
             <p className="mt-2 text-white/80 max-w-md text-sm">Grab amazing discounts on flights, hotels and holiday packages. Limited time only!</p>
-            <button className="mt-5 bg-primary text-primary-foreground px-6 py-2.5 rounded-md font-semibold text-sm">VIEW ALL OFFERS</button>
+            {/* VIEW OFFERS Requires Login */}
+            <button onClick={() => handleSecureAction('/offers')} className="mt-5 bg-primary text-primary-foreground px-6 py-2.5 rounded-md font-semibold text-sm hover:scale-105 transition">VIEW ALL OFFERS</button>
           </div>
           <div className="grid grid-cols-3 gap-3 sm:gap-4 text-sm">
             {[
@@ -343,14 +356,15 @@ function Index() {
                 <button key={d} onClick={() => setDestFilter(d)} className={`px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium ${destFilter === d ? "bg-purple-brand text-white" : "text-foreground/70"}`}>{d}</button>
               ))}
             </div>
-            <a href="#" className="text-xs sm:text-sm text-purple-brand font-semibold flex items-center gap-1">View All <ArrowRight className="h-4 w-4" /></a>
+            <button onClick={() => handleSecureAction('/destinations')} className="text-xs sm:text-sm text-purple-brand font-semibold flex items-center gap-1 hover:underline">View All <ArrowRight className="h-4 w-4" /></button>
           </div>
         </div>
         <div className="relative">
           <button className="hidden md:grid absolute -left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white shadow-md place-items-center z-10"><ChevronLeft className="h-5 w-5" /></button>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {destinations.map((d) => (
-              <div key={d.name} className="relative rounded-xl overflow-hidden group cursor-pointer aspect-[4/5]">
+              {/* Destination Click Requires Login */}
+              <div key={d.name} onClick={() => handleSecureAction(`/destination/${d.name}`)} className="relative rounded-xl overflow-hidden group cursor-pointer aspect-[4/5]">
                 <img src={d.img} alt={d.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 text-white">
@@ -526,7 +540,7 @@ function Index() {
 
 /* ---------- Booking forms ---------- */
 
-function FlightForm({ tripType, setTripType }: { tripType: string; setTripType: (v: string) => void }) {
+function FlightForm({ tripType, setTripType, onSearch }: { tripType: string; setTripType: (v: string) => void; onSearch: () => void }) {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-6 w-full">
       {/* Radios */}
@@ -555,12 +569,12 @@ function FlightForm({ tripType, setTripType }: { tripType: string; setTripType: 
         <FieldBox label="Travellers & Class" icon={null} placeholder="1 Traveller, Economy" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} noBorder />
       </div>
 
-      <SearchButton label="SEARCH FLIGHTS" />
+      <SearchButton label="SEARCH FLIGHTS" onClick={onSearch} />
     </div>
   );
 }
 
-function HotelForm() {
+function HotelForm({ onSearch }: { onSearch: () => void }) {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
       <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
@@ -569,12 +583,12 @@ function HotelForm() {
         <FieldBox label="Check-Out" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} />
         <FieldBox label="Rooms & Guests" icon={null} placeholder="1 Room, 2 Adults" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} noBorder />
       </div>
-      <SearchButton label="SEARCH HOTELS" />
+      <SearchButton label="SEARCH HOTELS" onClick={onSearch} />
     </div>
   );
 }
 
-function HolidayForm() {
+function HolidayForm({ onSearch }: { onSearch: () => void }) {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
       <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
@@ -583,12 +597,12 @@ function HolidayForm() {
         <FieldBox label="Duration" icon={null} placeholder="Nights" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} />
         <FieldBox label="Travellers" icon={null} placeholder="2 Adults" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} noBorder />
       </div>
-      <SearchButton label="SEARCH HOLIDAYS" />
+      <SearchButton label="SEARCH HOLIDAYS" onClick={onSearch} />
     </div>
   );
 }
 
-function TrainForm() {
+function TrainForm({ onSearch }: { onSearch: () => void }) {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
       <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
@@ -600,12 +614,12 @@ function TrainForm() {
         <FieldBox label="Journey Date" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} />
         <FieldBox label="Class" icon={Train} placeholder="All Classes" trailing={<ChevronDown className="w-5 h-5 text-gray-500" />} noBorder />
       </div>
-      <SearchButton label="SEARCH TRAINS" />
+      <SearchButton label="SEARCH TRAINS" onClick={onSearch} />
     </div>
   );
 }
 
-function BusForm() {
+function BusForm({ onSearch }: { onSearch: () => void }) {
   return (
     <div className="flex flex-col lg:flex-row items-center gap-4 w-full">
       <div className="flex-1 flex flex-col lg:flex-row items-center w-full">
@@ -616,27 +630,15 @@ function BusForm() {
         <FieldBox className="lg:pl-8" label="To" icon={MapPin} placeholder="Going to" />
         <FieldBox label="Travel Date" icon={null} placeholder="Select Date" trailing={<Calendar className="w-5 h-5 text-gray-500" />} noBorder />
       </div>
-      <SearchButton label="SEARCH BUSES" />
+      <SearchButton label="SEARCH BUSES" onClick={onSearch} />
     </div>
   );
 }
 
-function SearchButton({ label = "SEARCH" }: { label?: string }) {
-  // Add the link wrapping for "SEARCH FLIGHTS" explicitly so it routes correctly
-  const isFlights = label.toUpperCase().includes("FLIGHT");
-  if (isFlights) {
-    return (
-      <Link
-        to="/flight-booking"
-        search={{ from: "DEL", to: "BOM", date: new Date().toISOString().slice(0, 10), pax: 1 }}
-        className="bg-[#FFB700] text-[#1a103c] font-extrabold text-[15px] px-8 py-4 rounded-xl flex items-center justify-center gap-2 w-full lg:w-auto shrink-0 shadow-md hover:bg-yellow-500 transition-all"
-      >
-        {label}
-      </Link>
-    );
-  }
+// SEARCH BUTTON COMPONENT UPDATE: Ekhon eta "onClick" function nibe
+function SearchButton({ label = "SEARCH", onClick }: { label?: string, onClick?: () => void }) {
   return (
-    <button className="bg-[#FFB700] text-[#1a103c] font-extrabold text-[15px] px-8 py-4 rounded-xl flex items-center justify-center gap-2 w-full lg:w-auto shrink-0 shadow-md hover:bg-yellow-500 transition-all">
+    <button onClick={onClick} className="bg-[#FFB700] text-[#1a103c] font-extrabold text-[15px] px-8 py-4 rounded-xl flex items-center justify-center gap-2 w-full lg:w-auto shrink-0 shadow-md hover:bg-yellow-500 transition-all">
       {label}
     </button>
   );
