@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import {
   Phone, Mail, Headphones, Facebook, Instagram, Twitter, Youtube,
   Plane, Building2, Palmtree, Train, Bus, Shield, Briefcase,
@@ -20,6 +19,10 @@ import t1 from "@/assets/t1.jpg";
 import t2 from "@/assets/t2.jpg";
 import t3 from "@/assets/t3.jpg";
 import { FaWhatsapp } from "react-icons/fa";
+
+// Import Auth Context and UserDropdown
+import { useAuth } from "@/contexts/AuthContext";
+import { UserDropdown } from "@/components/UserDropdown";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -82,6 +85,9 @@ function Index() {
   const [destFilter, setDestFilter] = useState<"Domestic" | "International">("Domestic");
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Bring in the Authentication state & functions
+  const { isAuthenticated, login, isLoading } = useAuth();
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* Top utility bar */}
@@ -127,10 +133,8 @@ function Index() {
             {/* Navigation Links */}
             <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 text-[12px] font-bold text-[#1a103c]">
               <Link to="/" className="text-[#FFB700] border-b-2 border-[#FFB700] pb-1 uppercase tracking-wide [&.active]:text-[#FFB700]">HOME</Link>
-              <Link to="/flights" className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1">FLIGHTS</Link>
-
-              <Link to="/hotels" className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1">HOTELS</Link>
-
+              <Link to="/flight-booking" className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1">FLIGHTS</Link>
+              <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">HOTELS</a>
               <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">HOLIDAY PACKAGES</a>
               <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">DOMESTIC TOURS</a>
               <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">INTERNATIONAL TOURS</a>
@@ -140,16 +144,69 @@ function Index() {
               </a>
             </nav>
 
-            {/* Right Side Call Us Button */}
-            <div className="hidden lg:flex items-center bg-[#FFB700] rounded-md px-4 py-2 gap-3 cursor-pointer hover:bg-yellow-500 transition shadow-sm">
-              <Phone className="w-4 h-4 text-[#1a103c] fill-[#1a103c]" />
-              <div className="flex flex-col text-[#1a103c] leading-none">
-                <span className="text-[10px] font-bold">Call Us Now</span>
-                <span className="text-[13px] font-extrabold tracking-wide mt-[2px]">+91 98745 67890</span>
+            {/* Right Side: Call Us & Auth */}
+            <div className="hidden lg:flex items-center gap-4">
+              
+              {/* Call Us Button */}
+              <div className="flex items-center bg-[#FFB700] rounded-md px-4 py-2 gap-3 cursor-pointer hover:bg-yellow-500 transition shadow-sm">
+                <Phone className="w-4 h-4 text-[#1a103c] fill-[#1a103c]" />
+                <div className="flex flex-col text-[#1a103c] leading-none">
+                  <span className="text-[10px] font-bold">Call Us Now</span>
+                  <span className="text-[13px] font-extrabold tracking-wide mt-[2px]">+91 98745 67890</span>
+                </div>
               </div>
+
+              {/* AUTHENTICATION SECTION */}
+              {isAuthenticated ? (
+                <UserDropdown />
+              ) : (
+                <button 
+                  onClick={() => login("user@example.com", "password123")} 
+                  disabled={isLoading}
+                  className="bg-[#1a103c] text-white px-5 py-2 rounded-md text-sm font-bold shadow-sm hover:bg-gray-800 transition disabled:opacity-50"
+                >
+                  {isLoading ? "Logging in..." : "Login / Signup"}
+                </button>
+              )}
+
             </div>
 
+            {/* Mobile Menu Button */}
+            <button onClick={() => setMobileOpen(!mobileOpen)} className="xl:hidden p-2 text-[#1a103c]">
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
+          
+          {/* Mobile Menu Content */}
+          {mobileOpen && (
+            <div className="xl:hidden mt-3 pb-3 border-t border-gray-100 pt-3 flex flex-col gap-3 text-[13px] font-bold text-[#1a103c]">
+              <Link to="/" className="uppercase">HOME</Link>
+              <Link to="/flight-booking" className="uppercase">FLIGHTS</Link>
+              <a href="#" className="uppercase">HOTELS</a>
+              <a href="#" className="uppercase">HOLIDAY PACKAGES</a>
+              <a href="#" className="uppercase">DOMESTIC TOURS</a>
+              <a href="#" className="uppercase">INTERNATIONAL TOURS</a>
+              <a href="#" className="uppercase">VISA SERVICES</a>
+              
+              {/* Mobile Auth Button */}
+              <div className="pt-3 mt-3 border-t border-gray-100">
+                {isAuthenticated ? (
+                  <div className="flex items-center justify-between">
+                    <span>Logged In Profile</span>
+                    <UserDropdown />
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => login("user@example.com", "password123")} 
+                    disabled={isLoading}
+                    className="w-full bg-[#1a103c] text-white px-5 py-2 rounded-md text-sm font-bold shadow-sm hover:bg-gray-800 transition disabled:opacity-50"
+                  >
+                    {isLoading ? "Logging in..." : "Login / Signup"}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -565,6 +622,19 @@ function BusForm() {
 }
 
 function SearchButton({ label = "SEARCH" }: { label?: string }) {
+  // Add the link wrapping for "SEARCH FLIGHTS" explicitly so it routes correctly
+  const isFlights = label.toUpperCase().includes("FLIGHT");
+  if (isFlights) {
+    return (
+      <Link
+        to="/flight-booking"
+        search={{ from: "DEL", to: "BOM", date: new Date().toISOString().slice(0, 10), pax: 1 }}
+        className="bg-[#FFB700] text-[#1a103c] font-extrabold text-[15px] px-8 py-4 rounded-xl flex items-center justify-center gap-2 w-full lg:w-auto shrink-0 shadow-md hover:bg-yellow-500 transition-all"
+      >
+        {label}
+      </Link>
+    );
+  }
   return (
     <button className="bg-[#FFB700] text-[#1a103c] font-extrabold text-[15px] px-8 py-4 rounded-xl flex items-center justify-center gap-2 w-full lg:w-auto shrink-0 shadow-md hover:bg-yellow-500 transition-all">
       {label}
