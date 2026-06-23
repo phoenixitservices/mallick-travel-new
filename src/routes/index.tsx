@@ -363,7 +363,6 @@ function Index() {
           <button className="hidden md:grid absolute -left-4 top-1/2 -translate-y-1/2 h-10 w-10 rounded-full bg-white shadow-md place-items-center z-10"><ChevronLeft className="h-5 w-5" /></button>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
             {destinations.map((d) => (
-              {/* Destination Click Requires Login */}
               <div key={d.name} onClick={() => handleSecureAction(`/destination/${d.name}`)} className="relative rounded-xl overflow-hidden group cursor-pointer aspect-[4/5]">
                 <img src={d.img} alt={d.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
