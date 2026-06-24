@@ -64,7 +64,7 @@ function Index() {
       {/* Background */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1920"
+          src="https://media.giphy.com/media/3o7TKtnuHOHHUjR38Y/giphy.gif"
           alt="Travel"
           className="h-full w-full object-cover"
         />
