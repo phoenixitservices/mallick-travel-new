@@ -151,7 +151,7 @@ function Index() {
           </div>
 
           {/* Email */}
-          /*
+          {/*
           <div className="mx-auto mt-14 max-w-2xl">
             <div className="flex flex-col gap-3 md:flex-row">
               <input
@@ -165,10 +165,10 @@ function Index() {
               </button>
             </div>
           </div>
-          */
+          */}
 
           {/* Contact */}
-          /*
+          {/*
           <div className="mt-14 flex flex-col items-center justify-center gap-6 md:flex-row">
             <div className="flex items-center gap-2 text-gray-300">
               <Phone className="h-4 w-4 text-[#FFB700]" />
@@ -180,10 +180,10 @@ function Index() {
               info@mallicktravel.com
             </div>
           </div>
-          */
+          */}
 
           {/* Social */}
-          /*
+          {/*
           <div className="mt-10 flex justify-center gap-4">
             {[Facebook, Instagram, Youtube].map(
               (Icon, index) => (
@@ -197,7 +197,7 @@ function Index() {
               )
             )}
           </div>
-          */
+          */}
 
           {/* Footer */}
           <div className="mt-16 border-t border-white/10 pt-6 text-sm text-gray-400">
@@ -207,7 +207,7 @@ function Index() {
       </div>
 
       {/* WhatsApp */}
-      /*
+      {/*
       <a
         href="https://wa.me/919999999999"
         target="_blank"
@@ -216,7 +216,7 @@ function Index() {
       >
         <FaWhatsapp className="h-8 w-8 text-white" />
       </a>
-      */
+      */}
     </div>
   );
 }
