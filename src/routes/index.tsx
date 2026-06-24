@@ -64,7 +64,7 @@ function Index() {
       {/* Background */}
       <div className="absolute inset-0">
         <img
-          src="https://media.tenor.com/X7Q7QxrfwS4AAAAi/airplane-travel.gif"
+          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=1920"
           alt="Travel"
           className="h-full w-full object-cover"
         />
