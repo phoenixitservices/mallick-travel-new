@@ -2,7 +2,6 @@ import { useState } from "react";
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { Plane, Mail, Lock, User as UserIcon, Loader2, ArrowRight, KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import authBg from "@/assets/auth-bg.jpg";
 
