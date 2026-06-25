@@ -1,31 +1,15 @@
 import { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import {
   Phone, Mail, Headphones, Facebook, Instagram, Twitter, Youtube, Linkedin,
-  Plane, ChevronDown, Menu, X, LogOut, User as UserIcon,
+  Plane, Menu, X, User as UserIcon,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { UserDropdown } from "./UserDropdown";
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast.success("Signed out");
-    setUserMenuOpen(false);
-    navigate({ to: "/" });
-  };
-
-  const displayName =
-    (user?.user_metadata?.full_name as string | undefined) ||
-    (user?.user_metadata?.name as string | undefined) ||
-    user?.email?.split("@")[0] ||
-    "Account";
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="w-full font-sans sticky top-0 z-50">
@@ -84,32 +68,7 @@ export function Header() {
 
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
-              <div className="relative">
-                <button
-                  onClick={() => setUserMenuOpen(v => !v)}
-                  className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition"
-                >
-                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-[#FFB700] to-orange-500 grid place-items-center text-white font-bold text-sm">
-                    {displayName.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="hidden sm:inline text-[13px] font-bold text-[#1a103c] max-w-[120px] truncate">{displayName}</span>
-                  <ChevronDown className="h-4 w-4 text-[#1a103c] hidden sm:inline" />
-                </button>
-                {userMenuOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 z-50 py-2">
-                      <div className="px-4 py-2 border-b border-gray-100">
-                        <div className="font-bold text-sm text-[#1a103c] truncate">{displayName}</div>
-                        <div className="text-xs text-gray-500 truncate">{user?.email}</div>
-                      </div>
-                      <button onClick={handleSignOut} className="w-full text-left px-4 py-2 text-sm text-[#1a103c] hover:bg-gray-50 flex items-center gap-2">
-                        <LogOut className="h-4 w-4" /> Sign out
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
+              <UserDropdown />
             ) : (
               <Link
                 to="/auth"
