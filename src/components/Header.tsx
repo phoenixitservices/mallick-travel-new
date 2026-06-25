@@ -74,6 +74,14 @@ export function Header() {
             <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">INTERNATIONAL TOURS</a>
           </nav>
 
+          <div className="flex items-center bg-[#FFB700] rounded-md px-4 py-2 gap-3 cursor-pointer hover:bg-yellow-500 transition shadow-sm">
+            <Phone className="w-4 h-4 text-[#1a103c] fill-[#1a103c]" />
+            <div className="flex flex-col text-[#1a103c] leading-none">
+              <span className="text-[10px] font-bold">Call Us Now</span>
+              <span className="text-[13px] font-extrabold tracking-wide mt-[2px]">+91 98745 67890</span>
+            </div>
+          </div>
+
           <div className="flex items-center gap-3">
             {isAuthenticated ? (
               <div className="relative">
