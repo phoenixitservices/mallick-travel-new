@@ -270,7 +270,7 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Leadership team */}
+      {/* Leadership team 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12">
         <h2 className="text-2xl sm:text-3xl font-extrabold text-center text-[#1a103c]">OUR LEADERSHIP TEAM</h2>
         <div className="mx-auto h-1 w-20 bg-[#FFB700] rounded-full mt-2" />
@@ -286,7 +286,7 @@ function AboutPage() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
