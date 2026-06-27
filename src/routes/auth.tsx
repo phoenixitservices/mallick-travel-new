@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plane, ChevronRight, Mail, Lock, Phone, User, KeyRound, ArrowLeft } from "lucide-react";
+import authBg from "@/assets/auth-bg.jpg";
 
 export const Route = createFileRoute("/auth")({
   component: AuthPage,
@@ -33,6 +34,7 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
 
   // ==============================
   //       LOGIN LOGIC
@@ -52,40 +54,50 @@ function AuthPage() {
     setLoading(false);
   };
 
-  const handleOtpLoginRequest = async (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    const { error } = await supabase.functions.invoke("login-otp", {
-      body: { action: "send", email },
-    });
-    
-    if (error) {
-      toast.error(error.message);
-    } else {
-      setLoginOtpStep("verify");
-      toast.success("OTP sent to your email.");
+    try {
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: undefined,
+        },
+      });
+
+      if (error) throw error;
+      toast.success("OTP sent to your email!");
+      
+      // 🔴 FIXED: UI কে verify স্টেপে পাঠানোর জন্য State আপডেট করা হলো
+      setLoginOtpStep("verify"); 
+      setOtpSent(true);
+
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to send OTP");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
-  const handleOtpLoginVerify = async (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    const { data, error } = await supabase.functions.invoke("login-otp", {
-      body: { action: "verify", email, otp },
-    });
-
-    if (error || !data?.success) {
-      toast.error("Invalid OTP");
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otp,
+        type: 'email',
+      });
+      if (error) throw error;
+      
+      toast.success("Successfully verified! Welcome.");
+      navigate({ to: "/" });
+    } catch (err: any) {
+      toast.error(err?.message || "Invalid or expired code");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    toast.success("Successfully logged in!");
-    navigate({ to: "/" });
-    setLoading(false);
   };
 
   // ==============================
@@ -154,6 +166,7 @@ function AuthPage() {
     setOtp("");
     setPassword("");
     setConfirmPassword("");
+    setOtpSent(false);
   };
 
   // ==============================
@@ -165,10 +178,9 @@ function AuthPage() {
       
       {/* Full Page Background Image & Overlay */}
       <div className="absolute inset-0 z-0">
-        {/* Dark overlay to make the form pop */}
         <div className="absolute inset-0 bg-slate-900/50 z-10 backdrop-blur-[2px]" />
         <img 
-          src="/src/assets/auth-bg.jpg" 
+          src={authBg} 
           alt="Travel Background" 
           className="w-full h-full object-cover"
           onError={(e) => {
@@ -208,7 +220,7 @@ function AuthPage() {
 
           {/* Login Method Toggle (Only for Login Mode) */}
           {mode === "login" && loginOtpStep === "request" && (
-            <div className="flex p-1 bg-slate-100 rounded-lg mb-6">
+            <div className="flex p-1 bg-slate-100 rounded-lg mb-8">
               <button
                 type="button"
                 onClick={() => { setLoginMethod("password"); setOtp(""); }}
@@ -258,7 +270,7 @@ function AuthPage() {
               transition={{ duration: 0.2 }}
               onSubmit={
                 mode === "login"
-                  ? (loginMethod === "password" ? handlePasswordLogin : (loginOtpStep === "request" ? handleOtpLoginRequest : handleOtpLoginVerify))
+                  ? (loginMethod === "password" ? handlePasswordLogin : (loginOtpStep === "request" ? handleSendOtp : handleVerifyOtp))
                   : (signupStep === "details" ? handleSignupDetails : signupStep === "otp" ? handleSignupVerifyOtp : handleSetPassword)
               }
               className="space-y-4"
