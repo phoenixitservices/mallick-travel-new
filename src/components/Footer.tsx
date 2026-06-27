@@ -1,4 +1,4 @@
-import {
+  import {
   Plane, Facebook, Instagram, Twitter, Youtube, MessageCircle,
   MapPin, Phone, Mail, Globe,
 } from "lucide-react";
@@ -45,9 +45,9 @@ export function Footer() {
         <div>
           <h4 className="text-white font-bold mb-4">CONTACT US</h4>
           <ul className="space-y-3 text-xs">
-            <li className="flex gap-2"><MapPin className="h-4 w-4 text-primary shrink-0" /> 123, R. N. Mukherjee Road, Kolkata - 700001, West Bengal, India</li>
+            {/*<li className="flex gap-2"><MapPin className="h-4 w-4 text-primary shrink-0" /> 123, R. N. Mukherjee Road, Kolkata - 700001, West Bengal, India</li>
             <li className="flex gap-2"><Phone className="h-4 w-4 text-primary shrink-0" /> +91 98745 67890</li>
-            <li className="flex gap-2"><Mail className="h-4 w-4 text-primary shrink-0" /> info@mallicktravels.com</li>
+            <li className="flex gap-2"><Mail className="h-4 w-4 text-primary shrink-0" /> info@mallicktravels.com</li>*/}
             <li className="flex gap-2"><Globe className="h-4 w-4 text-primary shrink-0" /> www.mallicktravels.com</li>
           </ul>
         </div>
