@@ -6,12 +6,15 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { UserDropdown } from "./UserDropdown";
+import { supabase } from "@/integrations/supabase/client"; // Supabase client import korlam
 
-// Menu item er jnno type definition
+// Menu item er jnno type definition (database onujayi)
 type MenuItem = {
-  id: string;
+  id: number;
   title: string;
   url: string;
+  sort_order: number;
+  is_active: boolean;
 };
 
 export function Header() {
@@ -20,27 +23,32 @@ export function Header() {
   
   // Dynamic menu items store korar jonno state
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  // Data ashar aage loading state handle korar jonno
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Ekhane apni apnar actual API ba database theke data fetch korben.
-    // Ami ekhane dummy data diyeci check korar jonno (8 ta item ache).
+    // Supabase theke actual data fetch korar function
     const fetchMenuData = async () => {
       try {
-        // const response = await fetch('/api/menus');
-        // const data = await response.json();
-        const dummyDbData = [
-          { id: "1", title: "HOME", url: "/" },
-          { id: "2", title: "FLIGHTS", url: "/flights" },
-          { id: "3", title: "HOTELS", url: "/hotels" },
-          { id: "4", title: "HOLIDAY PACKAGES", url: "/packages" },
-          { id: "5", title: "DOMESTIC TOURS", url: "/domestic" },
-          { id: "6", title: "INTERNATIONAL TOURS", url: "/international" },
-          { id: "7", title: "CRUISES", url: "/cruises" },
-          { id: "8", title: "VISA OFFERS", url: "/visa" },
-        ];
-        setMenuItems(dummyDbData);
+        setIsLoading(true);
+        // 'menu_items' table theke active (is_active = true) data anchi ebong sort_order onujayi sajiye nichi
+        const { data, error } = await supabase
+          .from('menu_items')
+          .select('*')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true });
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          setMenuItems(data);
+        }
       } catch (error) {
         console.error("Menu fetch failed:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -49,9 +57,7 @@ export function Header() {
 
   // 6 tar besi hole logic
   const MAX_ITEMS = 6;
-  // Jodi total items 6 er besi hoy, tahole prothom 5 ta alada korchi
   const visibleItems = menuItems.length > MAX_ITEMS ? menuItems.slice(0, MAX_ITEMS - 1) : menuItems;
-  // Baki item gulo "More" dropdown er jonno rakhchi
   const moreItems = menuItems.length > MAX_ITEMS ? menuItems.slice(MAX_ITEMS - 1) : [];
   const hasMore = moreItems.length > 0;
 
@@ -95,34 +101,40 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 text-[12px] font-bold text-[#1a103c]">
-            {visibleItems.map((item) => (
-              <Link 
-                key={item.id} 
-                to={item.url as any} 
-                className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1"
-              >
-                {item.title}
-              </Link>
-            ))}
-            
-            {/* MORE Dropdown Menu */}
-            {hasMore && (
-              <div className="relative group cursor-pointer">
-                <div className="flex items-center gap-1 hover:text-[#FFB700] transition uppercase tracking-wide py-2">
-                  MORE <ChevronDown className="h-4 w-4" />
-                </div>
-                <div className="absolute top-[100%] left-0 min-w-[200px] bg-white shadow-lg border border-gray-100 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col py-2 z-50">
-                  {moreItems.map((item) => (
-                    <Link 
-                      key={item.id} 
-                      to={item.url as any} 
-                      className="px-4 py-2 hover:bg-gray-50 hover:text-[#FFB700] transition uppercase tracking-wide text-[12px]"
-                    >
-                      {item.title}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+            {isLoading ? (
+              <div className="text-gray-400 animate-pulse">Loading menu...</div>
+            ) : (
+              <>
+                {visibleItems.map((item) => (
+                  <Link 
+                    key={item.id} 
+                    to={item.url as any} 
+                    className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1"
+                  >
+                    {item.title}
+                  </Link>
+                ))}
+                
+                {/* MORE Dropdown Menu */}
+                {hasMore && (
+                  <div className="relative group cursor-pointer">
+                    <div className="flex items-center gap-1 hover:text-[#FFB700] transition uppercase tracking-wide py-2">
+                      MORE <ChevronDown className="h-4 w-4" />
+                    </div>
+                    <div className="absolute top-[100%] left-0 min-w-[200px] bg-white shadow-lg border border-gray-100 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col py-2 z-50">
+                      {moreItems.map((item) => (
+                        <Link 
+                          key={item.id} 
+                          to={item.url as any} 
+                          className="px-4 py-2 hover:bg-gray-50 hover:text-[#FFB700] transition uppercase tracking-wide text-[12px]"
+                        >
+                          {item.title}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </nav>
 
@@ -155,11 +167,15 @@ export function Header() {
         {/* Mobile Navigation */}
         {mobileOpen && (
           <div className="xl:hidden mt-3 pb-3 border-t border-gray-100 pt-3 flex flex-col gap-3 text-[13px] font-bold text-[#1a103c] max-w-7xl mx-auto">
-            {menuItems.map((item) => (
-              <Link key={item.id} to={item.url as any} className="uppercase">
-                {item.title}
-              </Link>
-            ))}
+            {isLoading ? (
+              <div className="text-gray-400 animate-pulse text-center">Loading menu...</div>
+            ) : (
+              menuItems.map((item) => (
+                <Link key={item.id} to={item.url as any} className="uppercase">
+                  {item.title}
+                </Link>
+              ))
+            )}
           </div>
         )}
       </header>
