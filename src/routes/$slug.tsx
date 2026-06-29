@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { supabase } from "@/integrations/supabase/client"
 import { useEffect, useState } from 'react'
+import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
 
 export const Route = createFileRoute('/$slug')({
   component: DynamicLegalPage,
@@ -9,7 +11,7 @@ export const Route = createFileRoute('/$slug')({
 function DynamicLegalPage() {
   // URL theke slug ta ber kore ana
   const { slug } = Route.useParams()
-  
+
   const [pageData, setPageData] = useState<{ title: string; content: string } | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -17,7 +19,7 @@ function DynamicLegalPage() {
   useEffect(() => {
     async function fetchLegalPage() {
       setLoading(true)
-      
+
       const { data, error } = await supabase
         .from("legal_pages")
         .select("title, content")
@@ -29,14 +31,13 @@ function DynamicLegalPage() {
       } else {
         setPageData(data)
       }
-      
+
       setLoading(false)
     }
 
     fetchLegalPage()
-  }, [slug]) // slug change hole abar fetch korbe
+  }, [slug])
 
-  // Data asar aage loading dekhabe
   if (loading) {
     return (
       <div className="min-h-screen grid place-items-center">
@@ -45,7 +46,6 @@ function DynamicLegalPage() {
     )
   }
 
-  // Database e page na thakle error dekhabe
   if (error || !pageData) {
     return (
       <div className="min-h-screen grid place-items-center">
@@ -54,17 +54,20 @@ function DynamicLegalPage() {
     )
   }
 
-  // Data peye gele content render korbe
   return (
-    <main className="max-w-4xl mx-auto py-16 px-4 min-h-screen">
-      <h1 className="text-4xl font-bold text-navy-deep mb-8">
-        {pageData.title}
-      </h1>
-      
-      <div 
-        className="prose max-w-none text-gray-700"
-        dangerouslySetInnerHTML={{ __html: pageData.content }}
-      />
-    </main>
+    <>
+      <Header />
+      <main className="max-w-4xl mx-auto py-16 px-4 min-h-screen">
+        <h1 className="text-4xl font-bold text-navy-deep mb-8">
+          {pageData.title}
+        </h1>
+
+        <div
+          className="prose max-w-none text-gray-700"
+          dangerouslySetInnerHTML={{ __html: pageData.content }}
+        />
+      </main>
+      <Footer />
+    </>
   )
 }
