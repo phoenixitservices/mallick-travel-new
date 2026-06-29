@@ -16,38 +16,52 @@ type MenuItem = {
   is_active: boolean;
 };
 
+// Define the type for your company settings
+type CompanySettings = {
+  phone?: string;
+  email?: string;
+  // add other fields if necessary
+};
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated } = useAuth();
   
+  // Added missing state for companyData
+  const [companyData, setCompanyData] = useState<CompanySettings | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Combined fetch logic to prevent loading state race conditions
   useEffect(() => {
-    const fetchMenuData = async () => {
+    const fetchHeaderData = async () => {
       try {
         setIsLoading(true);
-        const { data, error } = await supabase
-          .from('menu_items')
-          .select('*')
-          .eq('is_active', true)
-          .order('sort_order', { ascending: true });
+        
+        // Fetch both company settings and menu items simultaneously
+        const [companyRes, menuRes] = await Promise.all([
+          supabase.from('company_settings').select('*'),
+          supabase.from('menu_items').select('*').eq('is_active', true).order('sort_order', { ascending: true })
+        ]);
 
-        if (error) {
-          throw error;
+        if (companyRes.error) console.error("Company settings fetch failed:", companyRes.error);
+        if (menuRes.error) console.error("Menu fetch failed:", menuRes.error);
+
+        if (companyRes.data && companyRes.data.length > 0) {
+          setCompanyData(companyRes.data[0]);
         }
-
-        if (data) {
-          setMenuItems(data);
+        
+        if (menuRes.data) {
+          setMenuItems(menuRes.data);
         }
       } catch (error) {
-        console.error("Menu fetch failed:", error);
+        console.error("Header data fetch failed:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchMenuData();
+    fetchHeaderData();
   }, []);
 
   const MAX_ITEMS = 6;
@@ -61,8 +75,8 @@ export function Header() {
       <div className="hidden md:block bg-navy-deep/90 border-b border-border text-sm">
         <div className="max-w-7xl mx-auto px-6 py-2 flex items-center justify-between text-white">
           <div className="flex items-center gap-6">
-            <span className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-primary" /> +91 98745 67890</span>
-            <span className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-primary" /> info@mallicktravels.com</span>
+            <span className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-primary" />{companyData?.phone || "Loading..."}</span>
+            <span className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-primary" />{companyData?.email || "Loading..."}</span>
             <span className="flex items-center gap-2"><Headphones className="h-3.5 w-3.5 text-primary" /> 24/7 Customer Support</span>
           </div>
           <div className="flex items-center gap-3">
@@ -132,11 +146,12 @@ export function Header() {
             )}
           </nav>
 
+          {/* Applied dynamic phone number mapping here as well */}
           <div className="flex items-center bg-[#FFB700] rounded-md px-4 py-2 gap-3 cursor-pointer hover:bg-yellow-500 transition shadow-sm">
             <Phone className="w-4 h-4 text-[#1a103c] fill-[#1a103c]" />
             <div className="flex flex-col text-[#1a103c] leading-none">
               <span className="text-[10px] font-bold">Call Us Now</span>
-              <span className="text-[13px] font-extrabold tracking-wide mt-[2px]">+91 98745 67890</span>
+              <span className="text-[13px] font-extrabold tracking-wide mt-[2px]">{companyData?.phone || "Loading..."}</span>
             </div>
           </div>
 
