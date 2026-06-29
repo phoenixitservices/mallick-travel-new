@@ -6,9 +6,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { UserDropdown } from "./UserDropdown";
-import { supabase } from "@/integrations/supabase/client"; // Supabase client import korlam
+import { supabase } from "@/integrations/supabase/client";
 
-// Menu item er jnno type definition (database onujayi)
 type MenuItem = {
   id: number;
   title: string;
@@ -21,17 +20,13 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated } = useAuth();
   
-  // Dynamic menu items store korar jonno state
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  // Data ashar aage loading state handle korar jonno
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Supabase theke actual data fetch korar function
     const fetchMenuData = async () => {
       try {
         setIsLoading(true);
-        // 'menu_items' table theke active (is_active = true) data anchi ebong sort_order onujayi sajiye nichi
         const { data, error } = await supabase
           .from('menu_items')
           .select('*')
@@ -55,7 +50,6 @@ export function Header() {
     fetchMenuData();
   }, []);
 
-  // 6 tar besi hole logic
   const MAX_ITEMS = 6;
   const visibleItems = menuItems.length > MAX_ITEMS ? menuItems.slice(0, MAX_ITEMS - 1) : menuItems;
   const moreItems = menuItems.length > MAX_ITEMS ? menuItems.slice(MAX_ITEMS - 1) : [];
