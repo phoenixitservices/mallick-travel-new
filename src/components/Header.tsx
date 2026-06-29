@@ -98,8 +98,8 @@ export function Header() {
             </div>
             <div className="flex flex-col justify-center">
               <div className="font-extrabold text-[20px] sm:text-[22px] leading-[1.1] tracking-tight">
-                <div className="text-[#1a103c]">MALLICK</div>
-                <div className="text-[#FFB700]">TRAVELS</div>
+                <div className="text-[#1a103c]">{companyData?.company_name || "Loading..."}</div>
+                {/* <div className="text-[#FFB700]">TRAVELS</div> */}
               </div>
               <div className="text-[9px] sm:text-[10px] italic text-gray-500 font-medium tracking-tight mt-[1px]">
                 Your Journey, Our Passion
