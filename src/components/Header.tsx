@@ -1,15 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   Phone, Mail, Headphones, Facebook, Instagram, Twitter, Youtube, Linkedin,
-  Plane, Menu, X, User as UserIcon,
+  Plane, Menu, X, User as UserIcon, ChevronDown
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { UserDropdown } from "./UserDropdown";
 
+// Menu item er jnno type definition
+type MenuItem = {
+  id: string;
+  title: string;
+  url: string;
+};
+
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated } = useAuth();
+  
+  // Dynamic menu items store korar jonno state
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+  useEffect(() => {
+    // Ekhane apni apnar actual API ba database theke data fetch korben.
+    // Ami ekhane dummy data diyeci check korar jonno (8 ta item ache).
+    const fetchMenuData = async () => {
+      try {
+        // const response = await fetch('/api/menus');
+        // const data = await response.json();
+        const dummyDbData = [
+          { id: "1", title: "HOME", url: "/" },
+          { id: "2", title: "FLIGHTS", url: "/flights" },
+          { id: "3", title: "HOTELS", url: "/hotels" },
+          { id: "4", title: "HOLIDAY PACKAGES", url: "/packages" },
+          { id: "5", title: "DOMESTIC TOURS", url: "/domestic" },
+          { id: "6", title: "INTERNATIONAL TOURS", url: "/international" },
+          { id: "7", title: "CRUISES", url: "/cruises" },
+          { id: "8", title: "VISA OFFERS", url: "/visa" },
+        ];
+        setMenuItems(dummyDbData);
+      } catch (error) {
+        console.error("Menu fetch failed:", error);
+      }
+    };
+
+    fetchMenuData();
+  }, []);
+
+  // 6 tar besi hole logic
+  const MAX_ITEMS = 6;
+  // Jodi total items 6 er besi hoy, tahole prothom 5 ta alada korchi
+  const visibleItems = menuItems.length > MAX_ITEMS ? menuItems.slice(0, MAX_ITEMS - 1) : menuItems;
+  // Baki item gulo "More" dropdown er jonno rakhchi
+  const moreItems = menuItems.length > MAX_ITEMS ? menuItems.slice(MAX_ITEMS - 1) : [];
+  const hasMore = moreItems.length > 0;
 
   return (
     <div className="w-full font-sans sticky top-0 z-50">
@@ -49,13 +93,37 @@ export function Header() {
             </div>
           </Link>
 
+          {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center gap-6 2xl:gap-8 text-[12px] font-bold text-[#1a103c]">
-            <Link to="/" className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1">HOME</Link>
-            <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">FLIGHTS</a>
-            <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">HOTELS</a>
-            <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">HOLIDAY PACKAGES</a>
-            <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">DOMESTIC TOURS</a>
-            <a href="#" className="hover:text-[#FFB700] transition uppercase tracking-wide">INTERNATIONAL TOURS</a>
+            {visibleItems.map((item) => (
+              <Link 
+                key={item.id} 
+                to={item.url as any} 
+                className="hover:text-[#FFB700] transition uppercase tracking-wide [&.active]:text-[#FFB700] [&.active]:border-b-2 [&.active]:border-[#FFB700] [&.active]:pb-1"
+              >
+                {item.title}
+              </Link>
+            ))}
+            
+            {/* MORE Dropdown Menu */}
+            {hasMore && (
+              <div className="relative group cursor-pointer">
+                <div className="flex items-center gap-1 hover:text-[#FFB700] transition uppercase tracking-wide py-2">
+                  MORE <ChevronDown className="h-4 w-4" />
+                </div>
+                <div className="absolute top-[100%] left-0 min-w-[200px] bg-white shadow-lg border border-gray-100 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col py-2 z-50">
+                  {moreItems.map((item) => (
+                    <Link 
+                      key={item.id} 
+                      to={item.url as any} 
+                      className="px-4 py-2 hover:bg-gray-50 hover:text-[#FFB700] transition uppercase tracking-wide text-[12px]"
+                    >
+                      {item.title}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </nav>
 
           <div className="flex items-center bg-[#FFB700] rounded-md px-4 py-2 gap-3 cursor-pointer hover:bg-yellow-500 transition shadow-sm">
@@ -83,14 +151,15 @@ export function Header() {
             </button>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
         {mobileOpen && (
           <div className="xl:hidden mt-3 pb-3 border-t border-gray-100 pt-3 flex flex-col gap-3 text-[13px] font-bold text-[#1a103c] max-w-7xl mx-auto">
-            <Link to="/" className="uppercase">HOME</Link>
-            <a href="#" className="uppercase">FLIGHTS</a>
-            <a href="#" className="uppercase">HOTELS</a>
-            <a href="#" className="uppercase">HOLIDAY PACKAGES</a>
-            <a href="#" className="uppercase">DOMESTIC TOURS</a>
-            <a href="#" className="uppercase">INTERNATIONAL TOURS</a>
+            {menuItems.map((item) => (
+              <Link key={item.id} to={item.url as any} className="uppercase">
+                {item.title}
+              </Link>
+            ))}
           </div>
         )}
       </header>
