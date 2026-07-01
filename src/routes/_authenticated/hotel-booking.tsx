@@ -10,10 +10,9 @@ import {
   ArrowLeft, CreditCard, Hotel, Map, BadgeCheck
 } from 'lucide-react'
 
-export const Route = createFileRoute('/_authenticated/hotel-booking' as any)({
+export const Route = createFileRoute('/_authenticated/hotel-booking')({
   component: ModernHotelBookingPage,
 })
-
 const MOCK_HOTELS = [
   {
     id: 1,
